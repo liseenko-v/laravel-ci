@@ -46,16 +46,33 @@ jobs:
       run: chmod -R 777 storage bootstrap/cache
     - name: Install JS Dependecies
       run: npm install
-    - name: Create Database And Run tests
+    - name: Create Database & make migrations
       env:
         DB_CONNECTION: mysql
         DB_DATABASE: laravel_ci
         DB_PORT: 33306
         DB_USER: root
         DB_PASSWORD: ${{ secrets.DB_PASSWORD_LARAVEL_CI }}
-      run: |        
-        php artisan migrate    
-        vendor/bin/phpunit --testdox    
+      run: php artisan migrate    
+         
+    - name: Run test by PHPUnit
+      env:
+        DB_CONNECTION: mysql
+        DB_DATABASE: laravel_ci
+        DB_PORT: 33306
+        DB_USER: root
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD_LARAVEL_CI }}
+      run: vendor/bin/phpunit --testdox  
+      
+    - name: Execute Code Sniffer via phpcs
+      run: |
+        composer require --dev squizlabs/php_codesniffer
+        vendor/bin/phpcs --standard=PSR12 app
+
+    - name: Execute Code Static Analysis (PHP Stan + Larastan)
+      run: |
+        composer require --dev nunomaduro/larastan
+        vendor/bin/phpstan analyse app -c ./vendor/nunomaduro/larastan/extension.neon  --level=4 --no-progress 
   
   laravel-deploy:
     needs: laravel-install-to-test
