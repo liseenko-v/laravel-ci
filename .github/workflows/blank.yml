@@ -52,7 +52,7 @@ jobs:
         DB_DATABASE: laravel_ci
         DB_PORT: 33306
         DB_USER: root
-        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD_LARAVEL_CI }}
       run: |        
         php artisan migrate    
         vendor/bin/phpunit --testdox    
