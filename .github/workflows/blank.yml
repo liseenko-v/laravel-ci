@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  laravel-tests:
+  laravel-install:
 
     runs-on: ubuntu-latest
 
@@ -32,7 +32,19 @@ jobs:
       run: |
         mkdir -p database
         touch database/database.sqlite
-        php artisan migrate
+        php artisan migrate    
+
+  laravel-tests:
+    needs: laravel-install
+    runs-on: ubuntu-latest
+
+    steps:    
+    - uses: actions/checkout@v2    
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.2.5
+            
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
