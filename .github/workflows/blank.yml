@@ -41,9 +41,9 @@ jobs:
       run: vendor/bin/phpunit --testdox
   
   laravel-deploy:
-    needs: laravel-install-to-deploy
+    needs: laravel-install-to-test
     runs-on: ubuntu-latest
-    
+
     steps: 
     - name: Log some info
       run: echo 'Start to deploy...'
